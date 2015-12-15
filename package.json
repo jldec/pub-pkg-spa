@@ -1,0 +1,17 @@
+{
+  "name": "pub-pkg-spa",
+  "version": "1.0.0",
+  "description": "Client-side router with jquery views and editor for pub-generator",
+  "main": "pub-config.js",
+  "dependencies": {
+    "debug": "^2.2.0",
+    "page": "^1.6.4"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jldec/pub-pkg-spa.git"
+  },
+  "author": "jurgen leschner",
+  "license": "MIT"
+}
