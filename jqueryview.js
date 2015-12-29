@@ -55,19 +55,19 @@ module.exports = function(generator) {
     if (layoutChanged(page)) return updateLayout(page);
     var $page = $('[data-render-page]');
     if (!$page.length) return log('jqueryview cannot update page ' + path);
-    generator.emit('before-update-view', $page);
-    $page.replaceWith(generator.renderPage(page));
-    generator.emit('after-update-view', $page);
+    updateDOM($page, generator.renderPage(page), title(page));
     lastPage = page;
   }
 
   function updateLayout(page) {
     if (!page || !$layout.length) return;
     var layout = generator.layoutTemplate(page);
-    generator.emit('before-update-view', $layout);
-    $layout.replaceWith(generator.renderLayout(page));
-    generator.emit('after-update-view', $layout);
+    updateDOM($layout, generator.renderLayout(page), title(page));
     lastPage = page;
+  }
+
+  function title(page) {
+    return page.title || page.name || u.unslugify(page._href);
   }
 
   // return true if new layout is different from current page layout
@@ -83,13 +83,16 @@ module.exports = function(generator) {
   function updateHtml(href) {
     var fragment = generator.fragment$[href];
     if (!fragment) return log('jqueryview cannot find fragment: ' + href);
-
     var $html = $('[data-render-html="' + href + '"]');
     if (!$html.length) return log('jqueryview cannot update html for fragment: ' + href);
+    updateDOM($html, generator.renderHtml(fragment));
+  }
 
-    generator.emit('before-update-view', $html);
-    $html.replaceWith(generator.renderHtml(fragment));
-    generator.emit('after-update-view', $html);
+  function updateDOM($view, html, title) {
+    generator.emit('before-update-view', $view);
+    $view.replaceWith(html);
+    if (title) { document.title = title; }
+    generator.emit('after-update-view', $view);
   }
 
 }

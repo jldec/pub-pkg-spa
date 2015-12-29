@@ -1,6 +1,6 @@
 {
   "name": "pub-pkg-spa",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Client-side router with jquery views and editor for pub-generator",
   "main": "pub-config.js",
   "dependencies": {

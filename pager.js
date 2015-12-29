@@ -67,4 +67,9 @@ module.exports = function(generator) {
 
     return pager;
   };
+
+  generator.initMenu = function initMenu($parent) {
+    $menu = $('<div id="spa-menu">pub</div>');
+    ($parent || $('body')).prepend($menu);
+  }
 }
