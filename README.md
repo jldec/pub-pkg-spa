@@ -1,5 +1,7 @@
 # pub-pkg-spa
 
+> NOTE: this module is no longer being supported. pub-server uses [pub-preview](https://github.com/jldec/pub-preview) with very similar functionality but only used in the editor. This module emits `before-update-view` and `after-update-view` events, not available in pub-preview.
+
 * client-side router (visionmedia/page) plugin for pub-generator
 * translates window.click events for intra-site links to generator.nav events
 * generator.nav events are then handled by jqueryview to update the DOM

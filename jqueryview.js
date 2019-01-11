@@ -10,10 +10,10 @@
  * data-render-page
  * data-render-html
  *
- * copyright 2015, Jurgen Leschner - github.com/jldec - MIT license
+ * copyright 2015-2019, Jurgen Leschner - github.com/jldec - MIT license
 **/
 
-module.exports = function(generator) {
+module.exports = function(generator, pager) {
 
   var opts = generator.opts;
   var u = generator.util;
@@ -23,8 +23,11 @@ module.exports = function(generator) {
   // if there is no data-render-layout attribute, updateLayout does nothing
   var $layout = $('[data-render-layout]');
 
-  // cache last page - TODO - find lastPage using location on startup
-  var lastPage = null;
+  // cache last page
+  var lastPage = pager.page;
+
+  // maintain scroll state per page when navigating
+  var scrollHistory = {};
 
   var view = {
     start: start, // call start() after views are created
@@ -52,18 +55,23 @@ module.exports = function(generator) {
   }
 
   function updatePage(page) {
-    if (layoutChanged(page)) return updateLayout(page);
+    scrollHistory[u.get(lastPage, '_href')] = getTop();
+    var scrollTo = scrollHistory[page._href] || 0;
+    lastPage = page;
+    if (layoutChanged(page)) return updateLayout(page, scrollTo);
     var $page = $('[data-render-page]');
     if (!$page.length) return log('jqueryview cannot update page ' + path);
-    updateDOM($page, generator.renderPage(page), title(page));
-    lastPage = page;
+    updateDOM($page, generator.renderPage(page), title(page), scrollTo);
   }
 
-  function updateLayout(page) {
+  function getTop() {
+    return typeof window.pageYOffset === 'number' ? window.pageYOffset : document.body.scrollTop;
+  }
+
+  function updateLayout(page, scrollTo) {
     if (!page || !$layout.length) return;
     var layout = generator.layoutTemplate(page);
-    updateDOM($layout, generator.renderLayout(page), title(page));
-    lastPage = page;
+    updateDOM($layout, generator.renderLayout(page), title(page), scrollTo);
   }
 
   function title(page) {
@@ -88,10 +96,13 @@ module.exports = function(generator) {
     updateDOM($html, generator.renderHtml(fragment));
   }
 
-  function updateDOM($view, html, title) {
+  function updateDOM($view, html, title, scrollTo) {
     generator.emit('before-update-view', $view);
     $view.replaceWith(html);
     if (title) { document.title = title; }
+    if (arguments.length > 3) {
+      $('html,body').scrollTop(scrollTo || 0);
+    }
     generator.emit('after-update-view', $view);
   }
 

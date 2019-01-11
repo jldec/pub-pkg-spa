@@ -10,7 +10,6 @@ module.exports =
   ],
 
   staticPaths: [
-    { path:'./spa-menu.css', route:'/css', inject:true }
   ],
 
   generatorPlugins: [

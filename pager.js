@@ -9,7 +9,7 @@
  * pager.page will be set to the current page object, maintained after each nav
  *
  * NOTE: uses history.pushState, which doesn't work in older browers
- * copyright 2015, Jurgen Leschner - github.com/jldec - MIT license
+ * copyright 2015-2019, Jurgen Leschner - github.com/jldec - MIT license
  *
 */
 var debug = require('debug')('pub:spa');
@@ -24,17 +24,17 @@ module.exports = function(generator) {
     var opts = generator.opts;
     var log = opts.log;
 
-    // bind jqueryview
-    var jqv = require('./jqueryview')(generator);
-    jqv.start();
-
     // https://github.com/visionmedia/page.js
     var pager = require('page');
 
     // initialize with current page
     var href = u.get(pubRef, 'href', location.pathname)
     pager.page = generator.page$[href];
-    debug('init ' + decodeURI(location) + (pager.page ? ' (ok)' : ' (undefined page)'));
+    debug('init ' + href + ' ' + (pager.page ? '(ok)' : '(undefined page)'));
+
+    // bind jqueryview
+    var jqv = require('./jqueryview')(generator, pager);
+    jqv.start();
 
     pager('*', function(ctx, next) {
       var path = ctx.path;
@@ -67,9 +67,4 @@ module.exports = function(generator) {
 
     return pager;
   };
-
-  generator.initMenu = function initMenu($parent) {
-    $menu = $('<div id="spa-menu">pub</div>');
-    ($parent || $('body')).prepend($menu);
-  }
 }
