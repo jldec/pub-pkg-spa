@@ -8,7 +8,7 @@
 
 ### Installation
 
-pub-pkg-spa is included with pub-server.
+pub-pkg-spa is not included with pub-server. To install, use `npm install --save-dev pub-pkg-spa`.
 
 Add `pub-pkg-spa` to the `pkgs` key in your `pub-config`.
 
